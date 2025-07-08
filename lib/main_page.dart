@@ -11,7 +11,7 @@ class _MainPageState extends State<MainPage> {
   final ScrollController _scrollController = ScrollController();
   final List<String> _items = [];
   final int _batchSize = 20;
-  final int _sliverAppBarEveryN = 5;
+  final int _n = 5;
   bool _isLoading = false;
 
   @override
@@ -52,33 +52,35 @@ class _MainPageState extends State<MainPage> {
     super.dispose();
   }
 
-    List<Widget> _buildSlivers() {
+  List<Widget> _buildSlivers() {
     List<Widget> slivers = [];
 
     for (int i = 0; i < _items.length; i++) {
-      if (i % _sliverAppBarEveryN == 0 && i != 0) {
-        slivers.add(SliverAppBar(
-          pinned: true,
-          floating: false,
-          expandedHeight: 100.0,
-          flexibleSpace: FlexibleSpaceBar(
-            title: Text('SliverAppBar after item $i'),
+      if (i % _n == 0 && i != 0) {
+        slivers.add(
+          SliverAppBar(
+            pinned: i % 2 == 0 ? false : true,
+            floating: false,
+            expandedHeight: 100.0,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text('SliverAppBar after item $i'),
+            ),
           ),
-        ));
+        );
       }
 
-      slivers.add(SliverToBoxAdapter(
-        child: ListTile(title: Text(_items[i])),
-      ));
+      slivers.add(SliverToBoxAdapter(child: ListTile(title: Text(_items[i]))));
     }
 
     if (_isLoading) {
-      slivers.add(SliverToBoxAdapter(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(child: CircularProgressIndicator()),
+      slivers.add(
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(child: CircularProgressIndicator()),
+          ),
         ),
-      ));
+      );
     }
 
     return slivers;
@@ -87,7 +89,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Infinity Scroll + SliverAppBars")),
+      appBar: AppBar(title: Text("Slivers task")),
       body: CustomScrollView(
         controller: _scrollController,
         slivers: _buildSlivers(),
